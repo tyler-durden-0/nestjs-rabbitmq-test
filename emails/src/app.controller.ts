@@ -7,9 +7,15 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @EventPattern('test')
-  getHelloPosts(@Payload() data: any, @Ctx() context: RmqContext): string {
+  getHelloEmails(@Payload() data: any, @Ctx() context: RmqContext): string {
     console.log('posts microservice data', data);
     console.log('posts microservice context', context);
     return this.appService.getHello();
   }
+  // @EventPattern('test')
+  // getHelloPosts(@Payload() data: any, @Ctx() context: RmqContext): string {
+  //   console.log('posts microservice data', data);
+  //   console.log('posts microservice context', context);
+  //   return this.appService.getHello();
+  // }
 }

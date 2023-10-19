@@ -12,12 +12,24 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     @Inject('POSTS_MICROSERVICE') private microserviceClient: ClientProxy,
+    @Inject('EMAILS_MICROSERVICE')
+    private emailsMicroserviceClient: ClientProxy,
   ) {
     this.microserviceClient = ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: ['amqp://admin:admin@localhost:5672'],
         queue: 'posts_queue',
+        queueOptions: {
+          durable: false,
+        },
+      },
+    });
+    this.emailsMicroserviceClient = ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: ['amqp://admin:admin@localhost:5672'],
+        queue: 'emails_queue',
         queueOptions: {
           durable: false,
         },
@@ -34,6 +46,17 @@ export class AppController {
   async getHelloFromPostsMicroservice(): Promise<Observable<string>> {
     // return this.microserviceClient.emit<string, any>('test', 'getHelloPosts');
     const response = this.microserviceClient.send<string, any>(
+      'test',
+      'getHelloPosts',
+    );
+    console.log('response', response);
+    return response;
+  }
+
+  @Get('emails-microservice')
+  async getHelloFromEmailsMicroservice(): Promise<Observable<string>> {
+    // return this.microserviceClient.emit<string, any>('test', 'getHelloPosts');
+    const response = this.emailsMicroserviceClient.send<string, any>(
       'test',
       'getHelloPosts',
     );
