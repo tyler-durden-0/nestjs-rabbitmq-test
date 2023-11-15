@@ -5,7 +5,7 @@ import {
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
-import { Observable, from, lastValueFrom, map, mergeMap, timeout } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 
 @Controller()
 export class AppController {
@@ -54,13 +54,10 @@ export class AppController {
   }
 
   @Get('emails-microservice')
-  async getHelloFromEmailsMicroservice(): Promise<Observable<string>> {
-    // return this.microserviceClient.emit<string, any>('test', 'getHelloPosts');
-    const response = this.emailsMicroserviceClient.send<string, any>(
-      'test',
-      'getHelloPosts',
+  async getHelloFromEmailsMicroservice(): Promise<string> {
+    const response = await lastValueFrom(
+      this.emailsMicroserviceClient.send<string, any>('test', 'getHelloPosts'),
     );
-    console.log('response', response);
     return response;
   }
 
