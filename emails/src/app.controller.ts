@@ -1,6 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
@@ -12,10 +18,9 @@ export class AppController {
     console.log('posts microservice context', context);
     return this.appService.getHello();
   }
-  // @EventPattern('test')
-  // getHelloPosts(@Payload() data: any, @Ctx() context: RmqContext): string {
-  //   console.log('posts microservice data', data);
-  //   console.log('posts microservice context', context);
-  //   return this.appService.getHello();
-  // }
+
+  @MessagePattern({ cmd: 'send_email' })
+  async sendEmail(@Payload() data: any): Promise<any> {
+    return this.appService.sendEmail(data.email);
+  }
 }
